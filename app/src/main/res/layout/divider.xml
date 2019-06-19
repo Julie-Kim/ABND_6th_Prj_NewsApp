@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/divider_height"
-    android:background="@color/colorPrimaryDark"
     android:layout_marginTop="@dimen/divider_padding"
     android:layout_marginBottom="@dimen/divider_padding"
+    android:background="@color/colorPrimaryDark"
     tools:showIn="@layout/list_item" />
