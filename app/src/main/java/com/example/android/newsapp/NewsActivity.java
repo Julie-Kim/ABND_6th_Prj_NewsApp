@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -48,13 +49,15 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     private TextView mEmptyTextView;
 
+    private SearchView mSearchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
 
-        final SearchView searchView = findViewById(R.id.search_view);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView = findViewById(R.id.search_view);
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.i(LOG_TAG, "onQueryTextSubmit() query : " + query);
@@ -63,7 +66,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
                 bundle.putString(KEY_QUERY, query);
                 loadNewsData(bundle);
 
-                hideSoftInput(searchView);
+                hideSoftInput(mSearchView);
                 return true;
             }
 
@@ -77,7 +80,20 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
                 return true;
             }
         });
-        searchView.setFocusable(false);
+        mSearchView.setFocusable(false);
+
+        ImageView refreshIcon = findViewById(R.id.refresh_icon);
+        refreshIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String query = mSearchView.getQuery().toString();
+                Log.i(LOG_TAG, "refresh_icon onClick() query : " + query);
+
+                Bundle bundle = new Bundle();
+                bundle.putString(KEY_QUERY, query);
+                loadNewsData(bundle);
+            }
+        });
 
         ListView newsListVIew = findViewById(R.id.list);
 

@@ -4,16 +4,35 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <SearchView
-        android:id="@+id/search_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/default_padding"
-        android:layout_marginEnd="@dimen/default_padding"
-        android:layout_marginRight="@dimen/default_padding"
-        android:layout_marginBottom="@dimen/default_padding"
-        android:iconifiedByDefault="false"
-        android:queryHint="@string/search_hint" />
+        android:orientation="horizontal">
+
+        <SearchView
+            android:id="@+id/search_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_padding"
+            android:layout_marginEnd="@dimen/default_padding"
+            android:layout_marginRight="@dimen/default_padding"
+            android:layout_marginBottom="@dimen/default_padding"
+            android:layout_weight="1"
+            android:iconifiedByDefault="false"
+            android:queryHint="@string/search_hint" />
+
+        <include layout="@layout/vertical_divider" />
+
+        <ImageView
+            android:id="@+id/refresh_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/default_padding"
+            android:contentDescription="@string/refresh"
+            android:src="@drawable/ic_refresh"
+            android:tint="@color/refresh_icon_color" />
+
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

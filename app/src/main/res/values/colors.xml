@@ -7,4 +7,5 @@
     <color name="section_name_text_color">#4b636e</color>
     <color name="date_text_color">#78909c</color>
     <color name="title_text_color">#5d4037</color>
+    <color name="refresh_icon_color">#4b636e</color>
 </resources>
