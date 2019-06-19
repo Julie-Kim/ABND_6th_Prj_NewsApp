@@ -58,9 +58,6 @@ class NewsAdapter extends ArrayAdapter<News> {
         }
 
         DateFormat formatter = new SimpleDateFormat("d MMM yyyy  hh:mm aaa", Locale.getDefault());
-        String formattedDateString = formatter.format(date);
-
-        Log.d(LOG_TAG, "formatDate() " + dateString + " -> " + formattedDateString);
-        return formattedDateString;
+        return formatter.format(date);
     }
 }

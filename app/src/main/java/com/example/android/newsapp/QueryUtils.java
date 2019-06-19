@@ -22,7 +22,7 @@ class QueryUtils {
     /**
      * Query the Guardian and return an {@link ArrayList<News>} object to represent a single news.
      */
-    static  ArrayList<News> fetchNewsData(String requestUrl) {
+    static ArrayList<News> fetchNewsData(String requestUrl) {
         Log.d(LOG_TAG, "fetchNewsData()");
 
         URL url = createUrl(requestUrl);

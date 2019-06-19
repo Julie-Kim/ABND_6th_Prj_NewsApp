@@ -1,5 +1,6 @@
 package com.example.android.newsapp;
 
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
@@ -13,10 +14,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -28,9 +32,11 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
     // Guardian request example : https://content.guardianapis.com/search?format=json&q=[query_content]&api-key=5901ab5f-bf03-482e-9d43-757092b8bbb6
     private static final String GUARDIAN_REQUEST_URL = "https://content.guardianapis.com/search?format=json";
     private static final String API_KEY = "5901ab5f-bf03-482e-9d43-757092b8bbb6";
-    private static final String DEFAULT_PAGE_SIZE = "20";
+    private static final String RECENT_NEWS_PAGE_SIZE = "20";
+    private static final String QUERY_NEWS_PAGE_SIZE = "10";
 
     private static final int NEWS_LOADER_ID = 1;
+    private static final String KEY_QUERY = "key_query";
 
     /**
      * Adapter for the list of news
@@ -46,6 +52,32 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+
+        final SearchView searchView = findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.i(LOG_TAG, "onQueryTextSubmit() query : " + query);
+
+                Bundle bundle = new Bundle();
+                bundle.putString(KEY_QUERY, query);
+                loadNewsData(bundle);
+
+                hideSoftInput(searchView);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.i(LOG_TAG, "onQueryTextChange() newText : " + newText);
+
+                if (TextUtils.isEmpty(newText)) {
+                    loadNewsData(new Bundle());
+                }
+                return true;
+            }
+        });
+        searchView.setFocusable(false);
 
         ListView newsListVIew = findViewById(R.id.list);
 
@@ -73,12 +105,20 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
 
+        loadNewsData(null);
+    }
+
+    private void loadNewsData(Bundle bundle) {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isConnected()) {
             // If there is a network connection, fetch data
-            getLoaderManager().initLoader(NEWS_LOADER_ID, null, this);
+            if (bundle == null) {
+                getLoaderManager().initLoader(NEWS_LOADER_ID, null, this);
+            } else {
+                getLoaderManager().restartLoader(NEWS_LOADER_ID, bundle, this);
+            }
         } else {
             // Otherwise, display error
             // First, hide loading indicator so error message will be visible
@@ -98,12 +138,21 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         Uri baseUri = Uri.parse(GUARDIAN_REQUEST_URL);
 
         Uri.Builder uriBuilder = baseUri.buildUpon();
+
+        String query = "";
+        if (bundle != null && bundle.containsKey(KEY_QUERY)) {
+            query = bundle.getString(KEY_QUERY);
+            Log.d(LOG_TAG, "onCreateLoader() query : " + query);
+        }
+
+        if (TextUtils.isEmpty(query)) {
+            uriBuilder.appendQueryParameter("page-size", RECENT_NEWS_PAGE_SIZE);
+        } else {
+            uriBuilder.appendQueryParameter("q", query);
+            uriBuilder.appendQueryParameter("page-size", QUERY_NEWS_PAGE_SIZE);
+        }
+
         uriBuilder.appendQueryParameter("api-key", API_KEY);
-
-        uriBuilder.appendQueryParameter("page-size", DEFAULT_PAGE_SIZE);
-
-        //TODO
-        //uriBuilder.appendQueryParameter("q", query);
 
         Log.d(LOG_TAG, "onCreateLoader() uri : " + uriBuilder.toString());
         return new NewsLoader(this, uriBuilder.toString());
@@ -132,5 +181,10 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         // Loader reset, so we can clear out our existing data.
         Log.i(LOG_TAG, "onLoaderReset()");
         mAdapter.clear();
+    }
+
+    private void hideSoftInput(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }
