@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/default_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/section_name"
+            style="@style/SectionNameTextStyle"
+            tools:text="World news" />
+
+        <TextView
+            android:id="@+id/publication_date"
+            style="@style/DateTextStyle"
+            tools:text="19 Jun 2019  05:00 AM" />
+
+    </LinearLayout>
+
+    <include layout="@layout/divider" />
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/TitleTextStyle"
+        tools:text="Tampa refugee taken in by New Zealand wins Fulbright scholarship" />
+
+</LinearLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<View xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/divider_height"
+    android:background="@color/colorPrimaryDark"
+    android:layout_marginTop="@dimen/divider_padding"
+    android:layout_marginBottom="@dimen/divider_padding"
+    tools:showIn="@layout/list_item" />
